@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import type { EventData } from "@/app/lib/tables-context";
 
 type TaskState = {
@@ -58,6 +58,7 @@ function fmt(v: number): string {
 
 export function EventSection({ event, color, id }: Props) {
   const scheme = schemes[color];
+
   const [taskStates, setTaskStates] = useState<TaskState[][]>(() =>
     event.categories.map((cat) =>
       cat.tasks.map((t) => ({ included: true, used: t.used }))
@@ -75,15 +76,15 @@ export function EventSection({ event, color, id }: Props) {
     return total;
   }, [taskStates, event.categories]);
 
-  const toggleTask = useCallback((ci: number, ti: number) => {
+  function toggleTask(ci: number, ti: number) {
     setTaskStates((prev) =>
       prev.map((cat, c) =>
         c === ci ? cat.map((s, t) => (t === ti ? { ...s, included: !s.included } : s)) : cat
       )
     );
-  }, []);
+  }
 
-  const setUsed = useCallback((ci: number, ti: number, val: number) => {
+  function setUsed(ci: number, ti: number, val: number) {
     setTaskStates((prev) =>
       prev.map((cat, c) =>
         c === ci
@@ -91,7 +92,7 @@ export function EventSection({ event, color, id }: Props) {
           : cat
       )
     );
-  }, []);
+  }
 
   function reset() {
     setTaskStates(
@@ -106,6 +107,7 @@ export function EventSection({ event, color, id }: Props) {
       <div className="flex items-center justify-between mb-3">
         <h2 className={`text-lg font-semibold ${scheme.title}`}>{event.name}</h2>
         <button
+          type="button"
           onClick={reset}
           className="text-xs text-slate-500 hover:text-slate-300 transition-colors px-2 py-1 rounded border border-slate-700 hover:border-slate-500"
         >
