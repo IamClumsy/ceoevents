@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useTransition } from "react";
 import type { EventData } from "@/app/lib/tables-context";
 
 type TaskState = {
@@ -52,14 +52,16 @@ function calcScore(taskName: string, points: number, used: number): number {
 }
 
 function fmt(v: number): string {
-  // Show integers without decimals, otherwise 2 decimal places
   return Number.isInteger(v) ? v.toLocaleString() : v.toLocaleString(undefined, { maximumFractionDigits: 2 });
 }
 
 export function EventSection({ event, color }: Props) {
   const scheme = schemes[color];
+  const [, startTransition] = useTransition();
 
-  // Flatten all tasks to track state by [catIndex][taskIndex]
+  // resetKey remounts all inputs when reset is pressed
+  const [resetKey, setResetKey] = useState(0);
+
   const [taskStates, setTaskStates] = useState<TaskState[][]>(() =>
     event.categories.map((cat) =>
       cat.tasks.map((t) => ({ included: true, used: t.used }))
@@ -86,13 +88,16 @@ export function EventSection({ event, color }: Props) {
   }
 
   function setUsed(ci: number, ti: number, val: number) {
-    setTaskStates((prev) =>
-      prev.map((cat, c) =>
-        c === ci
-          ? cat.map((s, t) => (t === ti ? { ...s, used: Math.max(0, val) } : s))
-          : cat
-      )
-    );
+    // Defer expensive recalculation so the input stays responsive
+    startTransition(() => {
+      setTaskStates((prev) =>
+        prev.map((cat, c) =>
+          c === ci
+            ? cat.map((s, t) => (t === ti ? { ...s, used: Math.max(0, val) } : s))
+            : cat
+        )
+      );
+    });
   }
 
   function reset() {
@@ -101,6 +106,8 @@ export function EventSection({ event, color }: Props) {
         cat.tasks.map(() => ({ included: true, used: 0 }))
       )
     );
+    // Remount inputs so defaultValue resets to 0
+    setResetKey((k) => k + 1);
   }
 
   return (
@@ -163,9 +170,10 @@ export function EventSection({ event, color }: Props) {
                           </td>
                           <td className="py-2 text-right">
                             <input
+                              key={`${ci}-${ti}-${resetKey}`}
                               type="number"
                               min={0}
-                              value={state.used}
+                              defaultValue={0}
                               onChange={(e) => setUsed(ci, ti, Number(e.target.value))}
                               disabled={!state.included}
                               className="w-24 rounded border border-slate-700 bg-slate-950 px-2 py-1 text-right text-white text-xs disabled:opacity-30 disabled:cursor-not-allowed"
