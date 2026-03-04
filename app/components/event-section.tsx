@@ -98,7 +98,7 @@ export function EventSection({ event, color }: Props) {
   function reset() {
     setTaskStates(
       event.categories.map((cat) =>
-        cat.tasks.map((t) => ({ included: true, used: t.used }))
+        cat.tasks.map(() => ({ included: true, used: 0 }))
       )
     );
   }
