@@ -84,7 +84,7 @@ function parseEvent(
 
 export async function GET() {
   try {
-    const filePath = path.join(process.cwd(), "src", "Book2.xlsx");
+    const filePath = path.join(process.cwd(), "src", "EventScoring.xlsx");
     if (!fs.existsSync(filePath)) {
       return NextResponse.json({ error: "Workbook not found" }, { status: 500 });
     }
