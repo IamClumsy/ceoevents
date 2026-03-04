@@ -103,7 +103,7 @@ export function EventSection({ event, color }: Props) {
   function reset() {
     setTaskStates(
       event.categories.map((cat) =>
-        cat.tasks.map(() => ({ included: true, used: 0 }))
+        cat.tasks.map((t) => ({ included: true, used: t.used }))
       )
     );
     // Remount inputs so defaultValue resets to 0
@@ -173,7 +173,7 @@ export function EventSection({ event, color }: Props) {
                               key={`${ci}-${ti}-${resetKey}`}
                               type="number"
                               min={0}
-                              defaultValue={0}
+                              defaultValue={task.used}
                               onChange={(e) => setUsed(ci, ti, Number(e.target.value))}
                               disabled={!state.included}
                               className="w-24 rounded border border-slate-700 bg-slate-950 px-2 py-1 text-right text-white text-xs disabled:opacity-30 disabled:cursor-not-allowed"
