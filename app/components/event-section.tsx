@@ -8,7 +8,7 @@ type TaskState = {
   used: number;
 };
 
-type ColorScheme = "violet" | "cyan";
+type ColorScheme = "violet" | "cyan" | "emerald";
 
 const schemes: Record<
   ColorScheme,
@@ -29,6 +29,14 @@ const schemes: Record<
     check: "accent-cyan-400",
     catHeader: "text-cyan-400",
     subtotal: "text-cyan-300",
+  },
+  emerald: {
+    card: "bg-gradient-to-b from-emerald-900/30 to-slate-900/70 border-emerald-700/40",
+    title: "text-emerald-300",
+    total: "text-emerald-200",
+    check: "accent-emerald-400",
+    catHeader: "text-emerald-400",
+    subtotal: "text-emerald-300",
   },
 };
 

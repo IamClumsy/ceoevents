@@ -25,9 +25,10 @@ export type TablesData = {
   events: EventData[];
 };
 
-// Columns for LEFT (TOP CEO) and RIGHT (ULTIMATE CEO)
-const LEFT = { category: 0, task: 1, points: 2, used: 3 };
-const RIGHT = { category: 6, task: 7, points: 8, used: 9 };
+// Columns for each event (0-indexed)
+const LEFT     = { category: 0,  task: 1,  points: 2,  used: 3  };
+const RIGHT    = { category: 6,  task: 7,  points: 8,  used: 9  };
+const WARM_UP  = { category: 12, task: 13, points: 14, used: 15 };
 
 function parseEvent(
   raw: unknown[][],
@@ -40,7 +41,7 @@ function parseEvent(
 
   const TOTAL_LABELS = new Set(["total", "approximate total for all days"]);
 
-  for (let i = 3; i < raw.length; i++) {
+  for (let i = 5; i < raw.length; i++) {
     const row = raw[i];
     if (!Array.isArray(row)) continue;
 
@@ -97,14 +98,16 @@ export async function GET() {
 
     const raw = XLSX.utils.sheet_to_json(ws, { header: 1 }) as unknown[][];
 
-    // Read event names from row 1
-    const topName = String(raw[1]?.[LEFT.task] ?? "TOP CEO EVENT");
-    const ultimateName = String(raw[1]?.[RIGHT.category] ?? "ULTIMATE CEO EVENT");
+    // Event names are now in row 4 (index 3) after 2 nav rows were inserted
+    const topName      = String(raw[3]?.[LEFT.task]      ?? "TOP CEO EVENT");
+    const ultimateName = String(raw[3]?.[RIGHT.category] ?? "ULTIMATE CEO EVENT");
+    const warmUpName   = String(raw[3]?.[WARM_UP.category] ?? "WARM UP EVENT");
 
     const result: TablesData = {
       events: [
         parseEvent(raw, LEFT, topName),
         parseEvent(raw, RIGHT, ultimateName),
+        parseEvent(raw, WARM_UP, warmUpName),
       ],
     };
 

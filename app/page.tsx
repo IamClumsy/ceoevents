@@ -3,7 +3,7 @@
 import { TablesProvider, useTables } from "@/app/lib/tables-context";
 import { EventSection } from "@/app/components/event-section";
 
-const COLORS = ["violet", "cyan"] as const;
+const COLORS = ["violet", "cyan", "emerald"] as const;
 
 function CalculatorContent() {
   const { tables, loading, error } = useTables();
