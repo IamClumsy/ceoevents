@@ -43,6 +43,7 @@ const schemes: Record<
 type Props = {
   event: EventData;
   color: ColorScheme;
+  id?: string;
 };
 
 /** EXP Card x24: score = used / 24 (not used * points) */
@@ -55,7 +56,7 @@ function fmt(v: number): string {
   return Number.isInteger(v) ? v.toLocaleString() : v.toLocaleString(undefined, { maximumFractionDigits: 2 });
 }
 
-export function EventSection({ event, color }: Props) {
+export function EventSection({ event, color, id }: Props) {
   const scheme = schemes[color];
   const [, startTransition] = useTransition();
 
@@ -111,8 +112,8 @@ export function EventSection({ event, color }: Props) {
   }
 
   return (
-    <section className={`rounded-2xl border p-5 shadow-xl ${scheme.card}`}>
-      <div className="flex items-center justify-between mb-5">
+    <section id={id} className={`rounded-2xl border p-4 shadow-xl ${scheme.card}`}>
+      <div className="flex items-center justify-between mb-3">
         <h2 className={`text-lg font-semibold ${scheme.title}`}>{event.name}</h2>
         <button
           onClick={reset}
@@ -122,7 +123,7 @@ export function EventSection({ event, color }: Props) {
         </button>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-3">
         {event.categories.map((cat, ci) => {
           const catTotal = cat.tasks.reduce((sum, task, ti) => {
             const state = taskStates[ci][ti];
@@ -131,7 +132,7 @@ export function EventSection({ event, color }: Props) {
 
           return (
             <div key={cat.name}>
-              <div className={`text-xs font-semibold uppercase tracking-widest mb-2 ${scheme.catHeader}`}>
+              <div className={`text-xs font-semibold uppercase tracking-widest mb-1 ${scheme.catHeader}`}>
                 {cat.name}
               </div>
               <div className="overflow-x-auto">
@@ -156,7 +157,7 @@ export function EventSection({ event, color }: Props) {
                           key={task.task}
                           className={`transition-opacity ${state.included ? "opacity-100" : "opacity-35"}`}
                         >
-                          <td className="py-2 pr-2">
+                          <td className="py-1 pr-2">
                             <input
                               type="checkbox"
                               checked={state.included}
@@ -164,11 +165,11 @@ export function EventSection({ event, color }: Props) {
                               className={`w-4 h-4 cursor-pointer ${scheme.check}`}
                             />
                           </td>
-                          <td className="py-2 text-slate-200">{task.task}</td>
-                          <td className="py-2 text-right text-slate-500 tabular-nums text-xs pr-2">
+                          <td className="py-1 text-slate-200">{task.task}</td>
+                          <td className="py-1 text-right text-slate-500 tabular-nums text-xs pr-2">
                             {fmt(task.points)}
                           </td>
-                          <td className="py-2 text-right">
+                          <td className="py-1 text-right">
                             <input
                               key={`${ci}-${ti}-${resetKey}`}
                               type="number"
@@ -179,7 +180,7 @@ export function EventSection({ event, color }: Props) {
                               className="w-24 rounded border border-slate-700 bg-slate-950 px-2 py-1 text-right text-white text-xs disabled:opacity-30 disabled:cursor-not-allowed"
                             />
                           </td>
-                          <td className={`py-2 text-right font-medium tabular-nums ${state.included ? scheme.total : "text-slate-700"}`}>
+                          <td className={`py-1 text-right font-medium tabular-nums ${state.included ? scheme.total : "text-slate-700"}`}>
                             {state.included ? fmt(score) : "—"}
                           </td>
                         </tr>
@@ -197,7 +198,7 @@ export function EventSection({ event, color }: Props) {
         })}
       </div>
 
-      <div className="mt-6 flex justify-between items-center border-t border-slate-700 pt-4">
+      <div className="mt-4 flex justify-between items-center border-t border-slate-700 pt-3">
         <span className="text-sm uppercase tracking-widest text-slate-400">
           Total Event Points
         </span>
