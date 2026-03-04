@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { TablesProvider, useTables } from "@/app/lib/tables-context";
 import { EventSection } from "@/app/components/event-section";
 
@@ -13,6 +14,7 @@ const NAV_COLORS: Record<string, string> = {
 
 function CalculatorContent() {
   const { tables, loading, error } = useTables();
+  const [resetCounts, setResetCounts] = useState<number[]>([]);
 
   if (loading) {
     return (
@@ -32,9 +34,18 @@ function CalculatorContent() {
 
   if (!tables) return null;
 
+  const counts = tables.events.map((_, i) => resetCounts[i] ?? 0);
+
+  function handleReset(i: number) {
+    setResetCounts((prev) => {
+      const next = [...(prev.length ? prev : tables!.events.map(() => 0))];
+      next[i] = (next[i] ?? 0) + 1;
+      return next;
+    });
+  }
+
   return (
     <>
-      {/* Navigation links */}
       <nav className="flex gap-2 mb-5 flex-wrap">
         {tables.events.map((event, i) => {
           const color = COLORS[i % COLORS.length];
@@ -52,7 +63,13 @@ function CalculatorContent() {
 
       <div className="space-y-4">
         {tables.events.map((event, i) => (
-          <EventSection key={event.name} id={event.name} event={event} color={COLORS[i % COLORS.length]} />
+          <EventSection
+            key={`${event.name}-${counts[i]}`}
+            id={event.name}
+            event={event}
+            color={COLORS[i % COLORS.length]}
+            onReset={() => handleReset(i)}
+          />
         ))}
       </div>
     </>

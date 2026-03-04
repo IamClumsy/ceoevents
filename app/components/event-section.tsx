@@ -44,6 +44,7 @@ type Props = {
   event: EventData;
   color: ColorScheme;
   id?: string;
+  onReset?: () => void;
 };
 
 /** EXP Card x24: score = used / 24 (not used * points) */
@@ -56,7 +57,7 @@ function fmt(v: number): string {
   return Number.isInteger(v) ? v.toLocaleString() : v.toLocaleString(undefined, { maximumFractionDigits: 2 });
 }
 
-export function EventSection({ event, color, id }: Props) {
+export function EventSection({ event, color, id, onReset }: Props) {
   const scheme = schemes[color];
 
   const [taskStates, setTaskStates] = useState<TaskState[][]>(() =>
@@ -95,11 +96,7 @@ export function EventSection({ event, color, id }: Props) {
   }
 
   function reset() {
-    setTaskStates(
-      event.categories.map((cat) =>
-        cat.tasks.map((t) => ({ included: true, used: t.used }))
-      )
-    );
+    onReset?.();
   }
 
   return (
