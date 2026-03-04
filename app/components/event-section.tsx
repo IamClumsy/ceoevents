@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import type { EventData } from "@/app/lib/tables-context";
 
 type TaskState = {
@@ -58,9 +58,6 @@ function fmt(v: number): string {
 
 export function EventSection({ event, color, id }: Props) {
   const scheme = schemes[color];
-  // resetKey remounts all inputs when reset is pressed
-  const [resetKey, setResetKey] = useState(0);
-
   const [taskStates, setTaskStates] = useState<TaskState[][]>(() =>
     event.categories.map((cat) =>
       cat.tasks.map((t) => ({ included: true, used: t.used }))
@@ -78,15 +75,15 @@ export function EventSection({ event, color, id }: Props) {
     return total;
   }, [taskStates, event.categories]);
 
-  function toggleTask(ci: number, ti: number) {
+  const toggleTask = useCallback((ci: number, ti: number) => {
     setTaskStates((prev) =>
       prev.map((cat, c) =>
         c === ci ? cat.map((s, t) => (t === ti ? { ...s, included: !s.included } : s)) : cat
       )
     );
-  }
+  }, []);
 
-  function setUsed(ci: number, ti: number, val: number) {
+  const setUsed = useCallback((ci: number, ti: number, val: number) => {
     setTaskStates((prev) =>
       prev.map((cat, c) =>
         c === ci
@@ -94,7 +91,7 @@ export function EventSection({ event, color, id }: Props) {
           : cat
       )
     );
-  }
+  }, []);
 
   function reset() {
     setTaskStates(
@@ -102,7 +99,6 @@ export function EventSection({ event, color, id }: Props) {
         cat.tasks.map((t) => ({ included: true, used: t.used }))
       )
     );
-    setResetKey((k) => k + 1);
   }
 
   return (
@@ -165,10 +161,9 @@ export function EventSection({ event, color, id }: Props) {
                           </td>
                           <td className="py-1 text-right">
                             <input
-                              key={`${ci}-${ti}-${resetKey}`}
                               type="number"
                               min={0}
-                              defaultValue={task.used}
+                              value={state.used}
                               onChange={(e) => setUsed(ci, ti, Number(e.target.value))}
                               disabled={!state.included}
                               className="w-24 rounded border border-slate-700 bg-slate-950 px-2 py-1 text-right text-white text-xs disabled:opacity-30 disabled:cursor-not-allowed"
