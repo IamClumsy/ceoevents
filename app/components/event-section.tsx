@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useTransition } from "react";
+import { useState, useMemo } from "react";
 import type { EventData } from "@/app/lib/tables-context";
 
 type TaskState = {
@@ -58,8 +58,6 @@ function fmt(v: number): string {
 
 export function EventSection({ event, color, id }: Props) {
   const scheme = schemes[color];
-  const [, startTransition] = useTransition();
-
   // resetKey remounts all inputs when reset is pressed
   const [resetKey, setResetKey] = useState(0);
 
@@ -89,27 +87,22 @@ export function EventSection({ event, color, id }: Props) {
   }
 
   function setUsed(ci: number, ti: number, val: number) {
-    // Defer expensive recalculation so the input stays responsive
-    startTransition(() => {
-      setTaskStates((prev) =>
-        prev.map((cat, c) =>
-          c === ci
-            ? cat.map((s, t) => (t === ti ? { ...s, used: Math.max(0, val) } : s))
-            : cat
-        )
-      );
-    });
+    setTaskStates((prev) =>
+      prev.map((cat, c) =>
+        c === ci
+          ? cat.map((s, t) => (t === ti ? { ...s, used: Math.max(0, val) } : s))
+          : cat
+      )
+    );
   }
 
   function reset() {
-    startTransition(() => {
-      setTaskStates(
-        event.categories.map((cat) =>
-          cat.tasks.map((t) => ({ included: true, used: t.used }))
-        )
-      );
-      setResetKey((k) => k + 1);
-    });
+    setTaskStates(
+      event.categories.map((cat) =>
+        cat.tasks.map((t) => ({ included: true, used: t.used }))
+      )
+    );
+    setResetKey((k) => k + 1);
   }
 
   return (
