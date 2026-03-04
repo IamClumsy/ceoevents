@@ -102,13 +102,14 @@ export function EventSection({ event, color, id }: Props) {
   }
 
   function reset() {
-    setTaskStates(
-      event.categories.map((cat) =>
-        cat.tasks.map((t) => ({ included: true, used: t.used }))
-      )
-    );
-    // Remount inputs so defaultValue resets to 0
-    setResetKey((k) => k + 1);
+    startTransition(() => {
+      setTaskStates(
+        event.categories.map((cat) =>
+          cat.tasks.map((t) => ({ included: true, used: t.used }))
+        )
+      );
+      setResetKey((k) => k + 1);
+    });
   }
 
   return (
