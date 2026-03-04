@@ -34,11 +34,14 @@ function CalculatorContent() {
 
   if (!tables) return null;
 
-  const counts = tables.events.map((_, i) => resetCounts[i] ?? 0);
+  const visibleEvents = tables.events.filter((e) =>
+    !e.name.toUpperCase().includes("ULTIMATE CEO EVENT") || e.name.toUpperCase().includes("TOP/ULTIMATE")
+  );
+  const counts = visibleEvents.map((_, i) => resetCounts[i] ?? 0);
 
   function handleReset(i: number) {
     setResetCounts((prev) => {
-      const next = [...(prev.length ? prev : tables!.events.map(() => 0))];
+      const next = [...(prev.length ? prev : visibleEvents.map(() => 0))];
       next[i] = (next[i] ?? 0) + 1;
       return next;
     });
@@ -47,7 +50,7 @@ function CalculatorContent() {
   return (
     <>
       <nav className="flex gap-2 mb-5 flex-wrap">
-        {tables.events.map((event, i) => {
+        {visibleEvents.map((event, i) => {
           const color = COLORS[i % COLORS.length];
           return (
             <a
@@ -62,7 +65,7 @@ function CalculatorContent() {
       </nav>
 
       <div className="space-y-4">
-        {tables.events.map((event, i) => (
+        {visibleEvents.map((event, i) => (
           <EventSection
             key={`${event.name}-${counts[i]}`}
             id={event.name}

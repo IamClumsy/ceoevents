@@ -99,7 +99,7 @@ export async function GET() {
     const raw = XLSX.utils.sheet_to_json(ws, { header: 1 }) as unknown[][];
 
     // Event names are now in row 4 (index 3) after 2 nav rows were inserted
-    const topName      = String(raw[3]?.[LEFT.task]      ?? "TOP CEO EVENT");
+    const topName      = "TOP/ULTIMATE CEO EVENT SCORING";
     const ultimateName = String(raw[3]?.[RIGHT.category] ?? "ULTIMATE CEO EVENT");
     const warmUpName   = String(raw[3]?.[WARM_UP.category] ?? "WARM UP EVENT");
 
