@@ -144,7 +144,7 @@ export function EventSection({ event, color, id, onReset }: Props) {
                       return (
                         <tr
                           key={task.task}
-                          className={`transition-opacity ${state.included ? "opacity-100" : "opacity-35"}`}
+                          className="transition-opacity"
                         >
                           <td className="py-1 pr-2">
                             <input
