@@ -151,6 +151,7 @@ export function EventSection({ event, color, id, onReset }: Props) {
                               type="checkbox"
                               checked={state.included}
                               onChange={() => toggleTask(ci, ti)}
+                              aria-label={`Include ${task.task}`}
                               className={`w-4 h-4 cursor-pointer ${scheme.check}`}
                             />
                           </td>
@@ -165,6 +166,7 @@ export function EventSection({ event, color, id, onReset }: Props) {
                               value={state.used}
                               onChange={(e) => setUsed(ci, ti, Number(e.target.value))}
                               disabled={!state.included}
+                              aria-label={`Amount used for ${task.task}`}
                               className="w-24 rounded border border-slate-700 bg-slate-950 px-2 py-1 text-right text-white text-xs disabled:opacity-30 disabled:cursor-not-allowed"
                             />
                           </td>
