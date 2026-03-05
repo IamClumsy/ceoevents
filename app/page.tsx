@@ -82,7 +82,7 @@ function CalculatorContent() {
 export default function Home() {
   return (
     <TablesProvider>
-      <main className="min-h-screen bg-slate-950 text-white">
+      <main className="min-h-screen text-white">
         <div className="mx-auto max-w-3xl px-4 py-6">
           <header className="mb-6 text-center">
             <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
