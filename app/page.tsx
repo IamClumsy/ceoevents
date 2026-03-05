@@ -49,7 +49,7 @@ function CalculatorContent() {
 
   return (
     <>
-      <nav className="flex gap-2 mb-5 flex-wrap">
+      <nav className="flex gap-2 mb-5 flex-wrap justify-center">
         {visibleEvents.map((event, i) => {
           const color = COLORS[i % COLORS.length];
           return (

@@ -102,7 +102,7 @@ export function EventSection({ event, color, id, onReset }: Props) {
   return (
     <section id={id} className={`rounded-2xl border p-4 shadow-xl ${scheme.card}`}>
       <div className="flex items-center justify-between mb-3">
-        <h2 className={`text-lg font-semibold ${scheme.title}`}>{event.name}</h2>
+        <h2 className={`text-lg font-semibold text-center flex-1 ${scheme.title}`}>{event.name}</h2>
         <button
           type="button"
           onClick={reset}
